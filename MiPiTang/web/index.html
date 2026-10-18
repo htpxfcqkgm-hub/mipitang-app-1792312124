@@ -224,7 +224,7 @@ const STAFF = {
   ]
 };
 function staffRowLabelY(i) { return 345 + i * 95; }
-function staffRowValueY(i) { return 375 + i * 95; }
+function staffRowValueY(i) { return 381 + i * 95; }
 
 const START_BTN = { x: W/2, y: 416, w: 240, h: 62 };
 const RULES_BTN = { x: W/2, y: 490, w: 200, h: 48 };
@@ -307,7 +307,7 @@ const PAUSE_RESUME  = { x: W/2, y: 330, w: 240, h: 52 };
 const PAUSE_RESTART = { x: W/2, y: 404, w: 240, h: 52 };
 const PAUSE_QUIT    = { x: W/2, y: 478, w: 240, h: 52 };
 const GO_REPLAY = { x: W/2, y: 620, w: 220, h: 52 };
-const GO_HOME   = { x: W/2, y: 690, w: 170, h: 40 };
+const GO_HOME   = { x: W/2, y: 684, w: 170, h: 40 };
 
 const input = { left:false, right:false, targetX: W/2 };
 
@@ -403,38 +403,38 @@ function onPointerDown(e) {
     checkEdgeStart(p); return;
   }
   if (state==='difficulty') {
-    if (inBackBtn(p)) { state='title'; beep(360,0.06,'square',0.03); return; }
+    if (inBackBtn(p)) { toTitle(); beep(360,0.06,'square',0.03); return; }
     const key=diffCardAt(p); if (key) { startGame(key); return; }
     checkEdgeStart(p); return;
   }
   if (state==='paused') {
     if (inBtn(PAUSE_RESUME,p)) { state='playing'; hoverBtn=null; beep(620,0.07,'square',0.035); return; }
     if (inBtn(PAUSE_RESTART,p)) { startGame(difficulty); hoverBtn=null; beep(520,0.07,'square',0.035); return; }
-    if (inBtn(PAUSE_QUIT,p)) { bankRun(); state='title'; hoverBtn=null; beep(360,0.08,'square',0.04); return; }
+    if (inBtn(PAUSE_QUIT,p)) { bankRun(); toTitle(); hoverBtn=null; beep(360,0.08,'square',0.04); return; }
     return;
   }
   if (state==='rules') {
-    if (inBackBtn(p)) { state='title'; beep(360,0.06,'square',0.03); return; }
+    if (inBackBtn(p)) { toTitle(); beep(360,0.06,'square',0.03); return; }
     const dot=rulesDotAt(p);
     if (dot>=0) { if (dot!==rulesPage) { rulesPage=dot; rulesT=0; beep(620,0.05,'square',0.025); } return; }
     if (p.y>100 && p.y<555) { rulesPage=(rulesPage+1)%RULES.length; rulesT=0; beep(620,0.05,'square',0.025); }
     checkEdgeStart(p); return;
   }
   if (state==='staff') {
-    if (inBackBtn(p)) { state='title'; beep(360,0.06,'square',0.03); return; }
+    if (inBackBtn(p)) { toTitle(); beep(360,0.06,'square',0.03); return; }
     if (staffDSHit(p)) { handleDSClick(); return; }
     checkEdgeStart(p); return;
   }
   if (state==='gameover') {
     if (performance.now()-gameoverAt<500) return;
     if (inBtn(GO_REPLAY,p)) { beep(620,0.07,'square',0.035); startGame(difficulty); return; }
-    if (inBtn(GO_HOME,p)) { beep(360,0.06,'square',0.03); state='title'; hoverBtn=null; return; }
+    if (inBtn(GO_HOME,p)) { beep(360,0.06,'square',0.03); toTitle(); hoverBtn=null; return; }
     return;
   }
   if (state==='victory') {
     if (performance.now()-victoryAt<500) return;
     if (inBtn(GO_REPLAY,p)) { beep(620,0.07,'square',0.035); startGame(difficulty); return; }
-    if (inBtn(GO_HOME,p)) { beep(360,0.06,'square',0.03); state='title'; hoverBtn=null; return; }
+    if (inBtn(GO_HOME,p)) { beep(360,0.06,'square',0.03); toTitle(); hoverBtn=null; return; }
     return;
   }
 
@@ -488,25 +488,25 @@ window.addEventListener('keydown', e => {
     if (e.code==='KeyC') { state='staff'; staffT=1; staffEnter=0; e.preventDefault(); return; }
   }
   if (state==='difficulty') {
-    if (e.code==='Escape') { state='title'; e.preventDefault(); return; }
+    if (e.code==='Escape') { toTitle(); e.preventDefault(); return; }
     if (e.code==='Digit1') { startGame('easy'); e.preventDefault(); return; }
     if (e.code==='Digit2') { startGame('normal'); e.preventDefault(); return; }
     if (e.code==='Digit3') { startGame('hard'); e.preventDefault(); return; }
   }
   if (state==='rules') {
-    if (e.code==='Escape'||e.code==='KeyR') { state='title'; e.preventDefault(); return; }
+    if (e.code==='Escape'||e.code==='KeyR') { toTitle(); e.preventDefault(); return; }
     if (e.code==='ArrowRight'||e.code==='Space'||e.code==='Enter') { rulesPage=(rulesPage+1)%RULES.length; rulesT=0; e.preventDefault(); return; }
     if (e.code==='ArrowLeft') { rulesPage=(rulesPage-1+RULES.length)%RULES.length; rulesT=0; e.preventDefault(); return; }
   }
-  if (state==='staff') { if (e.code==='Escape'||e.code==='KeyC') { state='title'; e.preventDefault(); return; } }
+  if (state==='staff') { if (e.code==='Escape'||e.code==='KeyC') { toTitle(); e.preventDefault(); return; } }
   if (state==='paused') {
     if (e.code==='Escape'||e.code==='KeyP'||e.code==='Space'||e.code==='Enter') { state='playing'; e.preventDefault(); return; }
     if (e.code==='KeyR') { startGame(difficulty); e.preventDefault(); return; }
-    if (e.code==='KeyQ') { bankRun(); state='title'; hoverBtn=null; e.preventDefault(); return; }
+    if (e.code==='KeyQ') { bankRun(); toTitle(); hoverBtn=null; e.preventDefault(); return; }
   }
   if (state==='gameover'||state==='victory') {
     if (e.code==='Space'||e.code==='Enter') { startGame(difficulty); e.preventDefault(); return; }
-    if (e.code==='Escape') { state='title'; hoverBtn=null; e.preventDefault(); return; }
+    if (e.code==='Escape') { toTitle(); hoverBtn=null; e.preventDefault(); return; }
   }
   if (e.code==='ArrowLeft'||e.code==='KeyA') { input.left=true; e.preventDefault(); }
   if (e.code==='ArrowRight'||e.code==='KeyD') { input.right=true; e.preventDefault(); }
@@ -814,11 +814,11 @@ function drawHUD(now) {
   drawBackBtn();
   ctx.textAlign='left'; ctx.textBaseline='alphabetic';
   ctx.fillStyle=D.color; ctx.font='bold 12px "PingFang SC",sans-serif';
-  ctx.fillText(L('难度 · '+dName(D), 'Difficulty · '+dName(D)),58,38);
+  ctx.fillText(L('难度 · '+dName(D), 'Difficulty · '+dName(D)),58,38,W-80);
   ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.font='bold 13px "PingFang SC",sans-serif';
   ctx.fillText(L('得分','Score'),58,62);
   ctx.fillStyle='#fff'; ctx.font='bold 28px "PingFang SC",sans-serif';
-  ctx.fillText(String(score),58,92);
+  ctx.fillText(String(score),58,92,W/2-80);
   ctx.textAlign='right'; ctx.fillStyle='rgba(255,255,255,0.4)';
   ctx.font='bold 12px "PingFang SC",sans-serif';
   ctx.fillText(L('目标 '+D.winScore, 'Target '+D.winScore),W-20,96);
@@ -857,7 +857,7 @@ function drawHUD(now) {
   } else {
     chargeTxt = L('酱汁充能中…','Charging…');
   }
-  ctx.fillText(chargeTxt,bx+2,by-10);
+  ctx.fillText(chargeTxt,bx+2,by-10,bw-4);
 }
 function drawBigBtn(btn,label,color,now,hover,seed,sub) {
   const pulse=0.5+Math.sin(now/400+(seed||0))*0.5;
@@ -872,20 +872,24 @@ function drawBigBtn(btn,label,color,now,hover,seed,sub) {
   ctx.globalAlpha=1;
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillStyle=color; ctx.font='bold 20px "PingFang SC",sans-serif';
-  ctx.fillText(label,btn.x,btn.y+1);
+  ctx.fillText(label,btn.x,btn.y+1,btn.w-24);
   if (sub) { ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font='11px "PingFang SC",sans-serif'; ctx.fillText(sub,btn.x,btn.y+btn.h/2+12); }
   ctx.restore();
 }
+function toTitle() {
+  enemies.length=0; bullets.length=0; particles.length=0; shockwaves.length=0;
+  state='title'; hoverBtn=null;
+}
 function drawTitle(now) {
   ctx.textAlign='center'; ctx.textBaseline='alphabetic';
-  const titleFontSize = LANG === 'zh' ? 64 : 40;
+  const titleFontSize = LANG === 'zh' ? 64 : 32;
   ctx.save(); ctx.shadowColor='#ff2d55'; ctx.shadowBlur=40;
   ctx.fillStyle='#ffd93d'; ctx.font='bold '+titleFontSize+'px "PingFang SC","Microsoft YaHei",sans-serif';
-  ctx.fillText(L('酱味大鸡','SAUCY BIG CHICKEN'),W/2,148); ctx.restore();
+  ctx.fillText(L('酱味大鸡','SAUCY BIG CHICKEN'),W/2,148,W-40); ctx.restore();
   const subFontSize = LANG === 'zh' ? 22 : 15;
   ctx.save(); ctx.shadowColor='#ff6b1a'; ctx.shadowBlur=20;
   ctx.fillStyle='#ff9f43'; ctx.font='bold '+subFontSize+'px "PingFang SC",sans-serif';
-  ctx.fillText(L('· 降 维 打 击 ·','· DIMENSION STRIKE ·'),W/2,190); ctx.restore();
+  ctx.fillText(L('· 降 维 打 击 ·','· DIMENSION STRIKE ·'),W/2,190,W-40); ctx.restore();
   const bob=Math.sin(now/380)*6;
   drawChicken(W/2,306+bob,1.0);
   drawBigBtn(START_BTN,L('开 始 游 戏','Start Game'),'#ffd93d',now,hoverBtn==='start',0,null);
@@ -896,27 +900,26 @@ function drawTitle(now) {
   ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='12px "PingFang SC",sans-serif';
   ctx.fillText(useTouchControls?L('触摸模式','Touch Mode'):L('键盘模式','Keyboard Mode'),12,H-12);
   ctx.textAlign='center';
-  if (totalScore>0) {
-    ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='11px "PingFang SC",sans-serif';
-    ctx.fillText(L('累计总分 ','Total Score ')+totalScore,W/2,H-72);
-  }
-  if (best>0) {
-    ctx.fillStyle='rgba(255,255,255,0.42)'; ctx.font='bold 14px "PingFang SC",sans-serif';
-    ctx.fillText(L('历史最高  ','Best  ')+best,W/2,H-52);
+  if (totalScore>0 || best>0) {
+    const parts=[];
+    if (totalScore>0) parts.push(L('累计总分 ','Total Score ')+totalScore);
+    if (best>0) parts.push(L('历史最高 ','Best ')+best);
+    ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.font='bold 13px "PingFang SC",sans-serif';
+    ctx.fillText(parts.join('  ·  '),W/2,H-56,W-40);
   }
   const a=0.35+Math.sin(now/350)*0.25;
   ctx.globalAlpha=a; ctx.fillStyle='#fff'; ctx.font='12px "PingFang SC",sans-serif';
-  ctx.fillText(L('© 全家桶工作室','© Family Bucket Studio'),W/2,H-30); ctx.globalAlpha=1;
+  ctx.fillText(L('© 全家桶工作室','© Family Bucket Studio'),W/2,H-30,W-40); ctx.globalAlpha=1;
 }
 function drawDifficulty(now) {
   drawBg(); drawStars(0.7);
   const enterEase=1-Math.pow(1-diffEnter,3);
   ctx.globalAlpha=enterEase; drawBackBtn();
   ctx.textAlign='center'; ctx.textBaseline='alphabetic';
-  const titleFontSize = LANG === 'zh' ? 38 : 30;
+  const titleFontSize = LANG === 'zh' ? 38 : 28;
   ctx.save(); ctx.shadowColor='#ff6b1a'; ctx.shadowBlur=24;
   ctx.fillStyle='#ffd93d'; ctx.font='bold '+titleFontSize+'px "PingFang SC",sans-serif';
-  ctx.fillText(L('选 择 难 度','SELECT DIFFICULTY'),W/2,130); ctx.restore();
+  ctx.fillText(L('选 择 难 度','SELECT DIFFICULTY'),W/2,130,W-40); ctx.restore();
   ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.font='14px "PingFang SC",sans-serif';
   ctx.fillText(L('三档目标分，越难越硬核','Three targets — harder means tougher'),W/2,168); ctx.globalAlpha=1;
   for (let i=0;i<DIFF_CARDS.length;i++) {
@@ -938,14 +941,16 @@ function drawDifficulty(now) {
     rrect(W/2-c.w/2+5,c.cy-c.h/2+8,5,c.h-16,3); ctx.fill(); ctx.globalAlpha=1;
     ctx.textAlign='left'; ctx.textBaseline='alphabetic';
     ctx.fillStyle=d.color; ctx.font='bold 26px "PingFang SC",sans-serif';
-    ctx.fillText(dName(d),W/2-c.w/2+26,c.cy-4);
+    ctx.fillText(dName(d),W/2-c.w/2+26,c.cy-4,c.w-190);
+    // 副标题紧跟难度名，避免英文长名重叠
+    const nameW=ctx.measureText(dName(d)).width;
     ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='12px "PingFang SC",sans-serif';
-    ctx.fillText(dTag(d),W/2-c.w/2+92,c.cy-6);
+    ctx.fillText(dTag(d),W/2-c.w/2+26+nameW+10,c.cy-6,c.w-150);
     ctx.fillStyle='rgba(255,255,255,0.72)'; ctx.font='13px "PingFang SC",sans-serif';
-    ctx.fillText(dBrief(d),W/2-c.w/2+26,c.cy+26);
+    ctx.fillText(dBrief(d),W/2-c.w/2+26,c.cy+26,c.w-150);
     ctx.textAlign='right'; ctx.fillStyle='rgba(255,217,61,0.9)';
     ctx.font='bold 13px "PingFang SC",sans-serif';
-    ctx.fillText(L('目标 '+d.winScore,'Target '+d.winScore),W/2+c.w/2-16,c.cy+26);
+    ctx.fillText(L('目标 '+d.winScore,'Target '+d.winScore),W/2+c.w/2-16,c.cy+26,120);
     ctx.restore();
   }
   const a=0.4+Math.sin(now/400)*0.3;
@@ -992,7 +997,7 @@ function drawRules(now) {
       ctx.fillStyle='rgba(255,180,80,0.9)';
       ctx.beginPath(); ctx.arc(cx+52-slide,lineY,4,0,Math.PI*2); ctx.fill();
       ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.font='15px "PingFang SC",sans-serif';
-      ctx.fillText(lines[i],cx+72-slide,lineY);
+      ctx.fillText(lines[i],cx+72-slide,lineY,cw-100);
     }
     ctx.globalAlpha=1; ctx.textBaseline='alphabetic';
   }
@@ -1017,7 +1022,7 @@ function drawRules(now) {
 }
 function drawEnemyGuide(cy,cx,cw,enterEase,ease) {
   const list=RULES[rulesPage].enemies;
-  const startY=cy+240, rowH=92, iconX=cx+62;
+  const startY=cy+232, rowH=76, iconX=cx+62;
   for (let i=0;i<list.length;i++) {
     const item=list[i];
     const itemEase=clamp((rulesT-i*0.1)/0.5,0,1);
@@ -1030,16 +1035,16 @@ function drawEnemyGuide(cy,cx,cw,enterEase,ease) {
     ctx.textAlign='left'; ctx.textBaseline='alphabetic';
     ctx.fillStyle=item.color; ctx.font='bold 17px "PingFang SC",sans-serif';
     const nm = L(item.nameZh, item.nameEn);
-    ctx.fillText(nm,iconX+45-slide,y-6);
-    const nameWidth=ctx.measureText(nm).width;
+    ctx.fillText(nm,iconX+45-slide,y-6,cw-195);
+    // HP 标签靠右对齐，与名称完全错开
     ctx.fillStyle='rgba(255,255,255,0.15)';
-    const tagW=52, tagH=16, tagX=iconX+55+nameWidth-slide;
-    rrect(tagX,y-18,tagW,tagH,8); ctx.fill();
+    const tagW=52, tagH=16, tagX=cx+cw-20-tagW;
+    rrect(tagX,y-16,tagW,tagH,8); ctx.fill();
     ctx.fillStyle='rgba(255,255,255,0.8)'; ctx.font='bold 11px "PingFang SC",sans-serif';
-    ctx.textAlign='center'; ctx.fillText(L(item.hpZh, item.hpEn),tagX+tagW/2,y-7);
+    ctx.textAlign='center'; ctx.fillText(L(item.hpZh, item.hpEn),tagX+tagW/2,y-5);
     ctx.textAlign='left'; ctx.fillStyle='rgba(255,255,255,0.72)';
     ctx.font='13px "PingFang SC",sans-serif';
-    ctx.fillText(L(item.descZh, item.descEn),iconX+45-slide,y+18);
+    ctx.fillText(L(item.descZh, item.descEn),iconX+45-slide,y+18,cw-140);
   }
   ctx.globalAlpha=1; ctx.textAlign='center'; ctx.textBaseline='alphabetic';
 }
@@ -1069,7 +1074,7 @@ function drawStaff(now) {
   for (let i=0;i<STAFF.rows.length;i++) {
     const row=STAFF.rows[i];
     const itemEase=clamp((staffT-i*0.08)/0.5,0,1);
-    const slide=(1-itemEase)*14;
+    const slide=(1-itemEase)*8;
     const labelY=staffRowLabelY(i), valueY=staffRowValueY(i);
     ctx.globalAlpha=enterEase*itemEase*0.75;
     ctx.textAlign='center'; ctx.fillStyle='rgba(180,200,255,0.75)';
@@ -1133,7 +1138,7 @@ function drawPause(now) {
   ctx.fillStyle='#ffd93d'; ctx.font='bold '+s+'px "PingFang SC",sans-serif';
   ctx.fillText(L('暂 停','PAUSED'),W/2,250); ctx.restore();
   ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.font='14px "PingFang SC",sans-serif';
-  ctx.fillText(L('本局分数 '+score+' · 目标 '+D.winScore, 'Score '+score+' · Target '+D.winScore),W/2,286);
+  ctx.fillText(L('本局分数 '+score+' · 目标 '+D.winScore, 'Score '+score+' · Target '+D.winScore),W/2,286,W-40);
   drawBigBtn(PAUSE_RESUME, L('继 续 游 戏','Resume'), '#7ee787', now, false, 0, null);
   drawBigBtn(PAUSE_RESTART, L('重 新 开 始','Restart'), '#ffd93d', now, false, 1.2, null);
   drawBigBtn(PAUSE_QUIT, L('退 出 并 结 算','Quit & Bank'), '#ff6b6b', now, false, 2.4, null);
@@ -1146,17 +1151,17 @@ function drawGameOver(now) {
   const overSize = LANG === 'zh' ? 54 : 44;
   ctx.save(); ctx.shadowColor='#ff2d55'; ctx.shadowBlur=30;
   ctx.fillStyle='#ff3b5c'; ctx.font='bold '+overSize+'px "PingFang SC",sans-serif';
-  ctx.fillText(L('酱 没 了','OUT OF SAUCE'),W/2,250); ctx.restore();
+  ctx.fillText(L('酱 没 了','OUT OF SAUCE'),W/2,250,W-40); ctx.restore();
   ctx.fillStyle=D.color; ctx.font='bold 16px "PingFang SC",sans-serif';
   ctx.fillText(L('难度 · ','Difficulty · ')+dName(D),W/2,292);
   ctx.fillStyle='#fff'; ctx.font='bold 18px "PingFang SC",sans-serif';
-  ctx.fillText(L('本 局 得 分','SCORE'),W/2,366);
+  ctx.fillText(L('本 局 得 分','SCORE'),W/2,356);
   ctx.fillStyle='#ffd93d'; ctx.font='bold 62px "PingFang SC",sans-serif';
-  ctx.fillText(String(score),W/2,432);
+  ctx.fillText(String(score),W/2,438);
   ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.font='bold 14px "PingFang SC",sans-serif';
-  ctx.fillText(L('目标 '+D.winScore+' 分','Target '+D.winScore),W/2,466);
+  ctx.fillText(L('目标 '+D.winScore+' 分','Target '+D.winScore),W/2,472);
   ctx.fillStyle='rgba(255,217,61,0.8)'; ctx.font='bold 18px "PingFang SC",sans-serif';
-  ctx.fillText(L('最高纪录  ','Best  ')+best,W/2,512);
+  ctx.fillText(L('最高纪录  ','Best  ')+best,W/2,514);
   drawBigBtn(GO_REPLAY, L('再 来 一 局','Play Again'), '#ffd93d', now, false, 0, null);
   drawSmallBtn(GO_HOME, L('返回标题','Back to Title'), '#8b9bb4');
 }
@@ -1166,15 +1171,15 @@ function drawVictory(now) {
   const vicSize = LANG === 'zh' ? 62 : 54;
   ctx.save(); ctx.shadowColor='#ffd93d'; ctx.shadowBlur=44;
   ctx.fillStyle='#7ee787'; ctx.font='bold '+vicSize+'px "PingFang SC",sans-serif';
-  ctx.fillText(L('通 关 啦','VICTORY!'),W/2,240); ctx.restore();
+  ctx.fillText(L('通 关 啦','VICTORY!'),W/2,240,W-40); ctx.restore();
   ctx.fillStyle=D.color; ctx.font='bold 16px "PingFang SC",sans-serif';
   ctx.fillText(L('难度 · ','Difficulty · ')+dName(D),W/2,282);
   const bob=Math.sin(now/300)*8;
   drawChicken(W/2,370+bob,1.0);
   ctx.fillStyle='#fff'; ctx.font='bold 18px "PingFang SC",sans-serif';
-  ctx.fillText(L('达 成 目 标 分','TARGET REACHED'),W/2,470);
+  ctx.fillText(L('达 成 目 标 分','TARGET REACHED'),W/2,458);
   ctx.fillStyle='#ffd93d'; ctx.font='bold 58px "PingFang SC",sans-serif';
-  ctx.fillText(String(score),W/2,530);
+  ctx.fillText(String(score),W/2,524);
   ctx.fillStyle='rgba(255,217,61,0.8)'; ctx.font='bold 18px "PingFang SC",sans-serif';
   ctx.fillText(L('最高纪录  ','Best  ')+best,W/2,578);
   drawBigBtn(GO_REPLAY, L('再 来 一 局','Play Again'), '#7ee787', now, false, 0, null);
